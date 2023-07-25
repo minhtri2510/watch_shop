@@ -1,0 +1,9 @@
+footer {
+    background-color: #20272e;
+    padding: 20px;
+    text-align: center;
+    color: aliceblue;
+  }
+  footer {
+    box-shadow: 0px -5px 10px rgba(0, 0, 0, 0.1); /* Điều chỉnh giá trị để tùy chỉnh box-shadow */
+  }
