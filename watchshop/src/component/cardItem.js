@@ -1,5 +1,5 @@
 import React, { Component } from 'react'
-import Style from './styleCartItem.module.css'
+import Style from '../css/styleCartItem.module.css'
 import { Link } from 'react-router-dom'
 
 export default class cardItem extends Component {
@@ -53,7 +53,7 @@ export default class cardItem extends Component {
                             <div >
                                 <button
                                     onClick={() => {
-                                        this.props.addToCart(this.props.item)
+                                        this.props.addToCart(this.props.item,1)
                                     }
                                     }
                                     className="btn btn-warning"
@@ -62,7 +62,7 @@ export default class cardItem extends Component {
                                 </button>
 
                                 <Link to={"/detail"}>
-                                    <button className="btn btn-primary"
+                                    <button className="btn btn-primary text-ligth"
                                         type='button'
                                         onClick={() => this.props.detail(this.props.item)}>
                                         Xem chi tiết

@@ -41,7 +41,7 @@
     opacity: 0;
     max-width: 80%;
     transition: opacity 0.3s ease-out;
-
+    color: #ffffff;
 }
 
 
@@ -62,7 +62,7 @@
 
 .card button {
     inset: auto auto 40px 30px;
-    color: inherit;
+    color: #ffffff;
     text-transform: uppercase;
 }
 

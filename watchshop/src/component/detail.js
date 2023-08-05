@@ -1,7 +1,33 @@
 import React, { Component } from 'react'
-import "../component/detailcss.module.css"
+import "../css/detailcss.module.css"
 
 export default class demo extends Component {
+  state = {
+    quantity: 1
+  }
+  handleInput = (event) => {
+    // Lấy giá trị của trường input từ event.target.value
+    this.setState({
+      quantity: event.target.value
+    })
+  };
+  handleIncrease = (isTrue) => {
+    var soLuong = this.state.quantity;
+    if (isTrue) {
+      soLuong = Number(soLuong) + 1;
+      this.setState({
+        quantity: soLuong,
+      }
+      )
+    } else if (this.state.quantity > 1) {
+      soLuong = Number(soLuong) - 1;
+      this.setState({
+        quantity: soLuong
+      })
+    }
+    console.log(this.state.quantity);
+  }
+
   render() {
     return (
       <div className='d-flex'>
@@ -46,10 +72,25 @@ export default class demo extends Component {
               </tr>
             </tbody>
           </table>
-          <h5>Giá bán: {this.props.product.price.toLocaleString()}VND</h5>
+          <h5 className='d-flex justify-content-start'>Giá bán: {this.props.product.price.toLocaleString()}VND</h5>
+          <div >
+            <button className="btn btn-info"
+              onClick={() => this.handleIncrease(false)}
+            >
+              -
+            </button>
+            <span className='m-4'>{this.state.quantity}</span>
+            {/* <input  width={"33px"} type='text' value={this.state.quantity} onChange={this.handleInput}/> */}
+            <button className="btn btn-info"
+              onClick={() => this.handleIncrease(true)}
+            >
+              +
+            </button>
+          </div>
+          <br />
           <button
             onClick={() => {
-              this.props.addToCart(this.props.product)
+              this.props.addToCart(this.props.product, this.state.quantity)
             }
             }
             className="btn btn-warning"
