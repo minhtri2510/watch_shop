@@ -3,6 +3,7 @@ import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
 import Nav from '../component/Nav'
 import '../css/Login.css'
+import Swal from 'sweetalert2';
 
 export default function Login(props) {
 
@@ -11,6 +12,12 @@ export default function Login(props) {
     userName: "",
     passWork: "",
   })
+
+  const [errors, setErrors] = useState({
+    userName: '',
+    passWork: '',
+  });
+
   const handleChange = (event) => {
 
     const { name, value } = event.target;
@@ -24,21 +31,38 @@ export default function Login(props) {
     }));
   };
 
-  const handleSubmit = (e) => {
-    e.preventDefault();
-    // Xử lý đăng nhập ở đây (gọi API, kiểm tra thông tin đăng nhập,...)
-    axios.post(`http://localhost:8080/api/user/login`, user)
-      .then(() => {
-        history('/');
-        localStorage.setItem("user", true)
+  const handleSubmit = (event) => {
+    event.preventDefault();
+    const newErrors = {};
 
-        console.log("success")
-        //  const isLogin =  localStorage.getItem("user") === "true";
+    if (!user.userName) {
+      newErrors.userName = 'Username is required';
+    }
 
-      }).catch((err) => {
-        console.log(err)
-      })
+    if (!user.passWork) {
+      newErrors.passWork = 'Password is required';
+    }
 
+    if (Object.keys(newErrors).length > 0) {
+      setErrors(newErrors);
+    } else {
+      // Xử lý đăng nhập ở đây (gọi API, kiểm tra thông tin đăng nhập,...)
+      axios.post(`http://localhost:8080/api/user/login`, user)
+        .then((response) => {
+          history('/');
+          localStorage.setItem("user", response.data.idUser)
+          localStorage.setItem("role", response.data.role)
+
+          props.getCarts();
+          Swal.fire({
+            title: "Login thành công",
+            icon: "success",
+          });
+
+        }).catch((err) => {
+          console.log(err)
+        })
+    }
 
   };
 
@@ -53,8 +77,9 @@ export default function Login(props) {
               name='userName'
               value={user.userName}
               onChange={handleChange}
-              required id="UserName" />
+               id="UserName" />
             <i class="mdi mdi-account"></i>
+            {errors.userName && <span className='error-message text-danger'>{errors.userName}</span>}
           </div>
           <div class="form-group log-status">
             <input type="password" class="form-control"
@@ -62,9 +87,10 @@ export default function Login(props) {
               id="password"
               value={user.passWork}
               onChange={handleChange}
-              required
+              
               placeholder="Password" />
             <i class="mdi mdi-lock"></i>
+            {errors.passWork && <span className='error-message text-danger'>{errors.passWork}</span>}
           </div>
           <span class="alert">Invalid Credentials</span>
           <a class="link" href="/">Lost your password?</a>

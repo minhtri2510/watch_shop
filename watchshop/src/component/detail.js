@@ -1,104 +1,118 @@
-import React, { Component } from 'react'
-import "../css/detailcss.module.css"
+import React, { useEffect, useState } from 'react';
+import "../css/detailcss.module.css";
+import { useParams } from 'react-router-dom';
+import axios from 'axios';
+import Nav from './Nav';
 
-export default class demo extends Component {
-  state = {
-    quantity: 1
-  }
-  handleInput = (event) => {
+const Detail = (props) => {
+  const [quantity, setQuantity] = useState(1);
+  const { id } = useParams();
+  const [product, setProduct] = useState([]);
+  const handleInput = (event) => {
     // Lấy giá trị của trường input từ event.target.value
-    this.setState({
-      quantity: event.target.value
-    })
+    setQuantity(event.target.value);
   };
-  handleIncrease = (isTrue) => {
-    var soLuong = this.state.quantity;
-    if (isTrue) {
-      soLuong = Number(soLuong) + 1;
-      this.setState({
-        quantity: soLuong,
-      }
-      )
-    } else if (this.state.quantity > 1) {
-      soLuong = Number(soLuong) - 1;
-      this.setState({
-        quantity: soLuong
-      })
-    }
-    console.log(this.state.quantity);
-  }
+  useEffect(() => {
+    getDetailProduct();
+  }, [])
 
-  render() {
-    return (
-      <div className='d-flex'>
+
+  const getDetailProduct = () => {
+    axios.get(`http://localhost:8080/api/product/getProduct/${id}`).
+      then((res) => {
+        console.log(res.data);
+        setProduct(res.data);
+      }).catch((er) => {
+        console.log(er);
+      });
+  }
+  const handleIncrease = (isTrue) => {
+    let updatedQuantity = quantity;
+    if (isTrue) {
+      updatedQuantity = Number(updatedQuantity) + 1;
+    } else if (updatedQuantity > 1) {
+      updatedQuantity = Number(updatedQuantity) - 1;
+    }
+    setQuantity(updatedQuantity);
+  };
+
+  return (
+    <>
+      <Nav
+        cart={props.cart}
+        handleQuantity={props.handleQuantity}
+        deleteItem={props.deleteItem}
+        getItemToCart={props.getItemToCart}
+        setCart={props.setCart}
+      />
+      <br/>
+      <div className='container d-flex'>
         <div>
-          <img height={"500px"} src={this.props.product.img} alt='acc' />
+          <img height={"500px"} src={`http://localhost:8080/api/product/get-image/${product.img}`} alt='acc' />
         </div>
         <div>
-          <h2 >{this.props.product.name}</h2>
-          <table className='table text-dark' >
+          <h2>{product.productName}</h2>
+          <table className='table text-dark'>
             <tbody>
               <tr>
                 <td>Xuất xứ</td>
-                <td>{this.props.product.thuongHieu}</td>
+                <td>{product.category}</td>
               </tr>
               <tr>
                 <td>Loại máy</td>
-                <td>{this.props.product.loaiMay}</td>
+                <td>{product.loaiMay}</td>
               </tr>
               <tr>
                 <td>Kính</td>
-                <td>{this.props.product.kinh}</td>
+                <td>{product.kinh}</td>
               </tr>
               <tr>
                 <td>Kiểu dáng</td>
-                <td>{this.props.product.kieuDang}</td>
+                <td>{product.kieuDang}</td>
               </tr>
               <tr>
                 <td>Đường kính</td>
-                <td>{this.props.product.duongKinh}</td>
+                <td>{product.duongKinh}</td>
               </tr>
               <tr>
                 <td>Chất liệu vỏ</td>
-                <td>{this.props.product.chatLieuVo}</td>
+                <td>{product.chatLieuVo}</td>
               </tr>
               <tr>
                 <td>Chất liệu dây</td>
-                <td>{this.props.product.chatLieuDay}</td>
+                <td>{product.chatLieuDay}</td>
               </tr>
               <tr>
                 <td>Bảo hành</td>
-                <td>{this.props.product.baoHanh}</td>
+                <td>{product.baoHanh}</td>
               </tr>
             </tbody>
           </table>
-          <h5 className='d-flex justify-content-start'>Giá bán: {this.props.product.price.toLocaleString()}VND</h5>
-          <div >
-            <button className="btn btn-info"
-              onClick={() => this.handleIncrease(false)}
-            >
+          <h5 className='d-flex justify-content-start text-danger'>
+            {product.price?(<p>Giá bán: {product.price.toLocaleString()}VND </p>):<></>}
+          </h5>
+          <div>
+            <button className="btn btn-info" onClick={() => handleIncrease(false)}>
               -
             </button>
-            <span className='m-4'>{this.state.quantity}</span>
-            {/* <input  width={"33px"} type='text' value={this.state.quantity} onChange={this.handleInput}/> */}
-            <button className="btn btn-info"
-              onClick={() => this.handleIncrease(true)}
-            >
+            <input style={{width:"45px"}} type='text' value={quantity} onChange={handleInput}/>
+            <button className="btn btn-info" onClick={() => handleIncrease(true)}>
               +
             </button>
           </div>
           <br />
           <button
             onClick={() => {
-              this.props.addToCart(this.props.product, this.state.quantity)
-            }
-            }
+              props.getItemToCart(product, quantity);
+            }}
             className="btn btn-warning"
           >
             Thêm vào giỏ
           </button>
         </div>
       </div>
-    )
-  }
-}
+    </>
+  );
+};
+
+export default Detail;

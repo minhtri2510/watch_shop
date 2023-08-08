@@ -1,80 +1,87 @@
-import React, { Component } from 'react'
-import Style from '../css/styleCartItem.module.css'
-import { Link } from 'react-router-dom'
+import React from 'react';
+// import Style from '../css/styleCartItem.module.css';
+import { Link } from 'react-router-dom';
 
-export default class cardItem extends Component {
-    render = () => {
-        return (
-            <>
-                <div>
-                    <div className={Style.card}>
-                        <img
-                            src={this.props.item.img}
-                            style={{ width: `325px`, height: `486px` }}
-                            alt="zxc"
-                        />
-                        <div className="card-content h-100 d-flex flex-column justify-content-around align-items-center" >
-                            <h2 >{this.props.item.name}</h2>
-                            <table className='table table-dark text-dark'>
-                                <tr>
-                                    <td>Xuất xứ</td>
-                                    <td>{this.props.item.thuongHieu}</td>
-                                </tr>
-                                <tr>
-                                    <td>Loại máy</td>
-                                    <td>{this.props.item.loaiMay}</td>
-                                </tr>
-                                <tr>
-                                    <td>Kính</td>
-                                    <td>{this.props.item.kinh}</td>
-                                </tr>
-                                <tr>
-                                    <td>Kiểu dáng</td>
-                                    <td>{this.props.item.kieuDang}</td>
-                                </tr>
-                                <tr>
-                                    <td>Đường kính</td>
-                                    <td>{this.props.item.duongKinh}</td>
-                                </tr>
-                                <tr>
-                                    <td>Chất liệu vỏ</td>
-                                    <td>{this.props.item.chatLieuVo}</td>
-                                </tr>
-                                <tr>
-                                    <td>Chất liệu dây</td>
-                                    <td>{this.props.item.chatLieuDay}</td>
-                                </tr>
-                                <tr>
-                                    <td>Bảo hành</td>
-                                    <td>{this.props.item.baoHanh}</td>
-                                </tr>
-                            </table>
-                            <h5>Giá bán: {this.props.item.price.toLocaleString()}đ</h5>
-                            <div >
-                                <button
-                                    onClick={() => {
-                                        this.props.addToCart(this.props.item,1)
-                                    }
-                                    }
-                                    className="btn btn-warning"
-                                >
-                                    Thêm vào giỏ
-                                </button>
+const CardItem = (props) => {
+  console.log(props.item)
+  return (
+    // <div>
+    //   <div className={Style.card}>
+    //     <img className='card-img'
+    //       // src={props.item.img}
+    //       src={`http://localhost:8080/api/product/get-image/${props.item.img}`}
+    //       style={{ width: `325px`, height: `486px` }}
+    //       alt="zxc"
+    //     />
+    //     <div className="card-content h-100 d-flex flex-column justify-content-around align-items-center" >
+    //       <h2>{props.item.name}</h2>
+    //       <table className='table table-dark text-dark'>
+    //         <tr>
+    //           <td>Xuất xứ</td>
+    //           <td>{props.item.thuongHieu}</td>
+    //         </tr>
+    //         <tr>
+    //           <td>Loại máy</td>
+    //           <td>{props.item.loaiMay}</td>
+    //         </tr>
+    //         {/* Các trường dữ liệu khác tương tự */}
+    //       </table>
+    //       <h5>Giá bán: {props.item.price}đ</h5>
+    //       {/* <h5>Giá bán: {props.item.price.toLocaleString()}đ</h5> */}
+    //       <div>
+    //         <button
+    //           onClick={() => {
+    //             props.getItemToCart(props.item, 1);
+    //           }}
+    //           className="btn btn-warning"
+    //         >
+    //           Thêm vào giỏ
+    //         </button>
+    //         <Link to={`/detail/${props.item.idProduct}`}>
+    //           <button className="btn btn-primary text-light" type='button' 
+    //           // onClick={() => props.detail(props.item)}
+    //           >
+    //             Xem chi tiết
+    //           </button>
+    //         </Link>
+    //         {/* <button className="btn btn-primary text-light" type='button' onClick={() => props.detail(props.item)}>
+    //             Xem chi tiết
+    //           </button> */}
+    //       </div>
+    //     </div>
+    //   </div>
+    // </div>
+    <div class="card h-100">
+      <img class="card-img-top"
+        src={`http://localhost:8080/api/product/get-image/${props.item.img}`}
+        //       style={{ width: `325px`, height: `486px` }}
+        alt="product"
+      />
+      <div class="card-body d-flex flex-column justify-content-between">
+        <h5 class="card-title">{props.item.productName}</h5>
+        <div className='d-flex flex-column'>
+          <h6 className='text-danger'>Giá bán: {props.item.price.toLocaleString()}đ</h6>
+          <div className='row d-flex justify-content-around'>
+            <button
+              onClick={() => {
+                props.getItemToCart(props.item, 1);
+              }}
+              className="col-6 d-flex btn btn-warning"
+            >
+              Thêm vào giỏ
+            </button>
+            <button className="col-5 btn d-flex btn-primary justify-content-center"
+            >
+              <Link to={`/detail/${props.item.idProduct}`} className='text-align-center text-dark'>
+                Chi tiết
+              </Link>
+            </button>
 
-                                <Link to={"/detail"}>
-                                    <button className="btn btn-primary text-ligth"
-                                        type='button'
-                                        onClick={() => this.props.detail(this.props.item)}>
-                                        Xem chi tiết
-                                    </button>
-                                </Link>
-                            </div>
-                        </div>
+          </div>
+        </div>
+      </div>
+    </div >
+  );
+};
 
-                    </div>
-
-                </div >
-            </>
-        )
-    }
-}
+export default CardItem;

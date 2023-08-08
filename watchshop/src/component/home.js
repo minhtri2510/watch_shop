@@ -8,22 +8,33 @@ import Login from '../testProduct/Login';
 import View from './View';
 import Register from '../testProduct/Register';
 import Managerment from '../testProduct/Managerment';
+import { useNavigate } from 'react-router-dom';
+import Detail from './detail';
 
-const data = require('../data/product.json');
 
 const Home = () => {
+  const navigate = useNavigate();
   const [cart, setCart] = useState([]);
-  const [listproduct, setListProduct] = useState(data);
+  const [listproduct, setListProduct] = useState([]);
   const [detailProd, setDetailProd] = useState([]);
-  // const [isClickLogin, setIsClickLogin] = useState(false);
+  const [Product] = useState({
+    idUser: "",
+    idProduct: "",
+    quantity: 1
+  });
+  const [data, setData] = useState([]);
+
   useEffect(() => {
     fetchProducts();
+    getCarts();
   }, []);
 
   const fetchProducts = () => {
-    axios.get('http://localhost:8080/product/list')
+    axios.get('http://localhost:8080/api/product/list')
       .then(response => {
         const products = response.data;
+        setListProduct(products);
+        setData(products);
         console.log(products);
       })
       .catch(error => {
@@ -42,6 +53,12 @@ const Home = () => {
   };
 
   const addToCart = (prod, number) => {
+    const User = localStorage.getItem('user');
+
+    if (!User) {
+      window.alert("Bạn chưa đăng nhập")
+      return;
+    }
     const cloneCart = [...cart];
 
     const foundItem = cloneCart.find((item) => item.product.id === prod.id);
@@ -50,7 +67,7 @@ const Home = () => {
       foundItem.quantity += number;
     } else {
       const cartItem = {
-        product: prod,
+        product: Product,
         quantity: number,
       };
       cloneCart.push(cartItem);
@@ -59,10 +76,47 @@ const Home = () => {
     setCart(cloneCart);
     console.log(cart);
   };
+  const getCarts = () => {
+    const user = localStorage.getItem("user");
+    console.log(user)
+    axios
+      .get(`http://localhost:8080/api/cart/list/${user}`)
+      .then((response) => {
+        console.log(response.data)
+        setCart(response.data);
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+  };
+
+  const getItemToCart = (product, quantity) => {
+    const user = localStorage.getItem("user");
+    console.log(product);
+    if (user) {
+      axios
+        .post("http://localhost:8080/api/cart/add", {
+          productId: product.idProduct,
+          userId: user,
+          quantity: quantity,
+        })
+        .then((response) => {
+          Swal.fire({
+            title: "thành công",
+            icon: "success",
+          });
+          getCarts();
+        })
+        .catch((error) => {
+          console.log(error);
+        });
+    } else {
+      window.alert("Bạn chưa đăng nhập")
+      navigate("/login");
+    }
+  };
 
   const deleteItem = (id) => {
-    const cloneCart = [...cart];
-    const index = cloneCart.findIndex((item) => item.product === id);
 
     Swal.fire({
       title: 'Bạn có chắn chắn xoá không?',
@@ -75,13 +129,16 @@ const Home = () => {
       cancelButtonText: 'không'
     }).then((result) => {
       if (result.isConfirmed) {
-        cloneCart.splice(index, 1);
-        setCart(cloneCart);
-        Swal.fire(
-          'Thành công!',
-          'Bạn đã xoá thành công',
-          'success'
-        );
+        axios.delete(`http://localhost:8080/api/cart/${id}`).then(() => {
+          Swal.fire(
+            'Thành công!',
+            'Bạn đã xoá thành công',
+            'success'
+          );
+          getCarts()
+        }).catch((error) => {
+          console.log(error)
+        })
       }
     });
   };
@@ -117,9 +174,10 @@ const Home = () => {
   return (
     <>
       <Routes>
-        <Route path='/login' element={<Login cart={cart}/>}></Route>
-        <Route path='/register' element={<Register  cart={cart}/>}></Route>
+        <Route path='/login' element={<Login cart={cart} getCarts={getCarts} />}></Route>
+        <Route path='/register' element={<Register cart={cart} />}></Route>
         <Route path='/' element={<View
+          setCart={setCart}
           cart={cart}
           handleCategory={handleCategory}
           product={detailProd}
@@ -128,8 +186,22 @@ const Home = () => {
           detail={detail}
           handleQuantity={handleQuantity}
           deleteItem={deleteItem}
+          getItemToCart={getItemToCart}
         />}></Route>
-        <Route path='/managerment' element={<Managerment cart={cart}/>}></Route>
+        <Route path='/managerment' element={<Managerment
+          cart={cart}
+          handleQuantity={handleQuantity}
+          deleteItem={deleteItem}
+          getItemToCart={getItemToCart}
+          setCart={setCart}
+        />}></Route>
+        <Route path='/detail/:id' element={<Detail
+          getItemToCart={getItemToCart}
+          cart={cart}
+          handleQuantity={handleQuantity}
+          deleteItem={deleteItem}
+          setCart={setCart}
+        />} />
       </Routes>
 
     </>

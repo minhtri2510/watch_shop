@@ -26,7 +26,7 @@ public class LoginController {
 
         // Xác thực thành công, có thể thực hiện các tác vụ bổ sung (tạo token, lưu thông tin đăng nhập vào session, v.v.)
         // Trả về thông tin đăng nhập (hoặc token) cho client
-        return ResponseEntity.ok("Login successful");
+        return new ResponseEntity<>(user1, HttpStatus.OK);
     }
 
     // Các API CRUD khác (Create, Read, Update, Delete) cho entity User

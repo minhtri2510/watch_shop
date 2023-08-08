@@ -2,7 +2,7 @@
     box-sizing:border-box;
     -moz-box-sizing:border-box;
     -webkit-box-sizing:border-box;
-    font-family:arial;
+    font-family: 'CustomFont', sans-serif;
   } 
   body{background:rgb(209, 208, 208);}
     

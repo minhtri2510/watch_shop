@@ -1,27 +1,23 @@
-import React, { Component } from 'react'
-import CardItem from './cardItem'
+import React from 'react';
+import CardItem from './cardItem';
 
-export default class productList extends Component {
+const ProductList = (props) => {
+  return (
+    <div className='container'>
+      <div className='row'>
+        {props.list.map((card) => (
+          <div className='col-3 p-2' key={card.id}>
+            <CardItem 
+              item={card} 
+              addToCart={props.addToCart}
+              detail={props.detail}
+              getItemToCart={props.getItemToCart}
+            />
+          </div>
+        ))}
+      </div>
+    </div>
+  );
+};
 
-    render = () => {
-        // console.log(this.props.list);
-        return (
-            <>
-                <div className='container'>
-                    <div className='row'>
-                        {this.props.list.map((card)=>(
-                            <div className='col-4 p-2'>
-                            <CardItem 
-                            item={card} 
-                            addToCart={this.props.addToCart}
-                            detail={this.props.detail}
-                            />
-                            </div>
-                        ))}
-                    </div>
-                </div >
-            </>
-        )
-    }
-
-}
+export default ProductList;

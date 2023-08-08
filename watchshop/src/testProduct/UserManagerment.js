@@ -18,6 +18,7 @@ export default function UserManagerment() {
     //         console.log(err)
     //     })
 
+    
     const callApi = () => {
         axios
             .get("http://localhost:8080/api/userManagerment/")

@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react'
 import axios from 'axios'
 
-export default function ListSP() {
+export default function ListSP(props) {
     useEffect(() => {
         callApi();
     },[])
@@ -25,8 +25,7 @@ export default function ListSP() {
                 setProduct(
                     response.data
                 )
-                //    product=response.data;
-                console.log(product);
+                // console.log(product);
             })
             .catch((error) => {
                 console.log("error: " + error);
@@ -45,13 +44,6 @@ export default function ListSP() {
                         <th scope="col">name</th>
                         <th scope="col">price</th>
                         <th scope="col">img</th>
-                        {/* <th scope="col">category</th>
-                        <th scope="col">loaiMay</th>
-                        <th scope="col">kieuDang</th>
-                        <th scope="col">kinh</th>
-                        <th scope="col">duongKinh</th>
-                        <th scope="col">chatLieuDay</th>
-                        <th scope="col">chatLieuVo</th> */}
                         <th scope="col">baoHanh</th>
                         <th scope="col">quantity</th>
                         <th scope="col">action</th>
@@ -65,19 +57,12 @@ export default function ListSP() {
                                 <th scope="row">{item.idProduct}</th>
                                 <td>{item.productName}</td>
                                 <td>{item.price}</td>
-                                {/* <td>{item.img}</td> */}
                                 <td><img src={`http://localhost:8080/api/product/get-image/${item.img}`}alt='sss' width={60} height={60}/></td>
-                                {/* <td>{item.category}</td>
-                                <td>{item.loaiMay}</td>
-                                <td>{item.kieuDang}</td>
-                                <td>{item.kinh}</td>
-                                <td>{item.duongKinh}</td>
-                                <td>{item.chatLieuDay}</td>
-                                <td>{item.chatLieuVo}</td> */}
                                 <td>{item.baoHanh}</td>
                                 <td>{item.quantity}</td>
                                 <td>
                                     <button onClick={()=>deleteItem(item.idProduct)}>delete</button>
+                                    <button onClick={()=>{props.handleUpdate(item); props.hanldeShowComponent("addProduct")}}>update</button>
                                 </td>
                             </tr>
                         )

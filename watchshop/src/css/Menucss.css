@@ -1,0 +1,31 @@
+#menu {
+    background-color: #f8f9fa;
+    border: 1px solid #ced4da;
+    border-radius: 10px;
+    padding: 15px;
+    margin: 20px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  }
+  
+  #menu button {
+    display: block;
+    width: 100%;
+    margin-bottom: 10px;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 5px;
+    background-color: #007bff;
+    color: #fff;
+    font-size: 16px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+  }
+  
+  #menu button:hover {
+    background-color: #0056b3;
+  }
+  
+  #menu button.active {
+    background-color: #0056b3;
+  }
+  

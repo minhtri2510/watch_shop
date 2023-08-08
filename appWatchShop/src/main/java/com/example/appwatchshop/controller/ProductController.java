@@ -48,6 +48,41 @@ public class ProductController {
         return ResponseEntity.ok(savedProduct);
     }
 
+    @PostMapping("/update/{id}")
+    public ResponseEntity<Product> updateProduct( @ModelAttribute Product product,@PathVariable Long id,
+                                                  @RequestParam(value = "imageFile", required = false) MultipartFile imageFile) throws IOException {
+        System.out.println(imageFile);
+        Product existingProduct = iProductDAO.findByIdProduct(id);
+        if (!(existingProduct == null)) {
+            Product existingProductData = existingProduct;
+            existingProductData.setProductName(product.getProductName());
+            existingProductData.setPrice(product.getPrice());
+            existingProductData.setCategory(product.getCategory());
+            existingProductData.setBaoHanh(product.getBaoHanh());
+            existingProductData.setChatLieuVo(product.getChatLieuVo());
+            existingProductData.setDuongKinh(product.getDuongKinh());
+            existingProductData.setKieuDang(product.getKieuDang());
+            existingProductData.setLoaiMay(product.getLoaiMay());
+            existingProductData.setChatLieuDay(product.getChatLieuDay());
+            existingProductData.setKinh(product.getKinh());
+            existingProductData.setQuantity(product.getQuantity());
+
+            // Xử lý cập nhật ảnh mới nếu có
+            if (imageFile != null && !imageFile.isEmpty()) {
+                byte[] bytes = imageFile.getBytes();
+                Path path = Paths.get("src/main/resources/" + imageFile.getOriginalFilename());
+                Files.write(path, bytes);
+                existingProductData.setImg(imageFile.getOriginalFilename());
+            }
+
+            Product updatedProduct = iProductDAO.save(existingProductData);
+            System.out.println(updatedProduct.getImg());
+            return ResponseEntity.ok(updatedProduct);
+        } else {
+            return ResponseEntity.notFound().build();
+        }
+    }
+
     @GetMapping(path = "/get-image/{imageName}")
     public ResponseEntity<ByteArrayResource> getImage(@PathVariable("imageName") String imageName) {
         if (imageName != null || "".equals(imageName)) {
@@ -62,5 +97,17 @@ public class ProductController {
             }
         }
         return ResponseEntity.badRequest().build();
+    }
+
+    @GetMapping(path = "/getProduct/{id}")
+    public ResponseEntity<?> getProductById(@PathVariable("id") Long id){
+        Product product = iProductDAO.findByIdProduct(id);
+        return ResponseEntity.ok(product);
+    }
+
+    @DeleteMapping(path = "/delete/{id}")
+    public ResponseEntity<?> deleteProductById(@PathVariable("id") Long id){
+        iProductDAO.deleteById(id);
+        return ResponseEntity.ok("delete success");
     }
 }

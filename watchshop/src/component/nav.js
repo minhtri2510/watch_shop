@@ -1,14 +1,17 @@
 import { Link } from 'react-router-dom'
 import React from 'react'
 import { useNavigate } from 'react-router-dom';
+import Cart from './cart';
 
 export default function Nav(props) {
 
     const Navigate = useNavigate();
     const user = localStorage.getItem("user");
-
+    const role = localStorage.getItem("role");
     const hanldLogout = () => {
         localStorage.removeItem("user");
+        localStorage.removeItem("role");
+        props.setCart([]);
         Navigate("/");
     }
 
@@ -21,8 +24,9 @@ export default function Nav(props) {
             </div>
             <div className='col-3 d-flex flex-row-reverse ' >
                 <div className='p-3'>
-                    <button className='btn btn-outline-light p-2' type="button " data-toggle="modal" data-target="#exampleModal">
-                        <i class="fa-solid fa-cart-shopping" style={{ color: "blue" }} />(<span>{props.cart.length}</span>)
+                    <button className='btn btn-outline-light p-2' type="button " data-toggle="modal" data-target="#modalCart">
+                        <i class="fa-solid fa-cart-shopping" style={{ color: "blue" }} />
+                        {/* (<span>{props.cart.length}</span>) */}
                     </button>
                 </div>
                 <div class="dropdown p-3">
@@ -37,14 +41,22 @@ export default function Nav(props) {
                                 </Link>
                             }
                         </li>
+
                         <li>
-                            <Link to={"/managerment"}><a class="dropdown-item" href="/managerment">Managerment</a></Link>
-                            </li>
+                            {role === 'ADMIN' ? <Link to={"/managerment"}><a class="dropdown-item" href="/managerment">Managerment</a></Link>:<></>}
+                            
+                        </li>
 
                         <li><Link to={"/register"}><a class="dropdown-item" href="/register">Register</a></Link></li>
                     </ul>
                 </div>
             </div>
+            <Cart
+                cart={props.cart}
+                handleQuantity={props.handleQuantity}
+                deleteItem={props.deleteItem}
+                getItemToCart={props.getItemToCart}
+            />
         </nav>
 
     )
